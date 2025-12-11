@@ -1,0 +1,110 @@
+#usda 1.0
+(
+    defaultPrim = "World"
+    upAxis = "Y"
+    doc = "Sphere at x=-20 and Cube at x=0 with lighting"
+)
+
+def Xform "World"
+{
+    # Materials
+    def Material "BlueLambertian"
+    {
+        color3f inputs:diffuseColor = (0.3, 0.3, 0.9)
+        float inputs:roughness = 1.0
+        float inputs:metallic = 0.0
+    }
+
+    def Material "GoldMetal"
+    {
+        color3f inputs:diffuseColor = (0.8, 0.6, 0.2)
+        float inputs:roughness = 0.1
+        float inputs:metallic = 1.0
+    }
+
+    def Material "GroundLambertian"
+    {
+        color3f inputs:diffuseColor = (0.5, 0.5, 0.4)
+        float inputs:roughness = 1.0
+        float inputs:metallic = 0.0
+    }
+    
+    def Xform "SphereObject"
+    {
+        float3 xformOp:translate = (-20, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Sphere "Sphere"
+        {
+            double radius = 10.0
+            rel material:binding = </World/BlueLambertian>
+        }
+    }
+
+    def Xform "CubeObject"
+    {
+        float3 xformOp:translate = (10, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Mesh "Cube"
+        {
+            rel material:binding = </World/GoldMetal>
+
+            # 8 vertices of a cube with half-extent 10 (size 20)
+            point3f[] points = [
+                (-10, -10, -10),
+                ( 10, -10, -10),
+                ( 10,  10, -10),
+                (-10,  10, -10),
+                (-10, -10,  10),
+                ( 10, -10,  10),
+                ( 10,  10,  10),
+                (-10,  10,  10)
+            ]
+
+            # 12 triangles (2 per face, 6 faces)
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [
+                # Front face (z = 10)
+                4, 5, 6,
+                4, 6, 7,
+                # Back face (z = -10)
+                1, 0, 3,
+                1, 3, 2,
+                # Top face (y = 10)
+                3, 7, 6,
+                3, 6, 2,
+                # Bottom face (y = -10)
+                0, 1, 5,
+                0, 5, 4,
+                # Right face (x = 10)
+                1, 2, 6,
+                1, 6, 5,
+                # Left face (x = -10)
+                0, 4, 7,
+                0, 7, 3
+            ]
+        }
+    }
+
+    def Xform "Ground"
+    {
+        float3 xformOp:translate = (0, -1010, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Sphere "Sphere"
+        {
+            double radius = 1000
+            rel material:binding = </World/GroundLambertian>
+        }
+    }
+
+    def DistantLight "Sun"
+    {
+        float inputs:intensity = 100
+        color3f inputs:color = (1.0, 0.95, 0.9)
+        float3 inputs:angle = (0, -1, -0.5)
+    }
+
+ 
+}

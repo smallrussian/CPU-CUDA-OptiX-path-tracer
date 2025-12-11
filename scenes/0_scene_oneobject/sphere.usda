@@ -1,0 +1,67 @@
+#usda 1.0
+(
+    defaultPrim = "World"
+    upAxis = "Y"
+    doc = "Single sphere with lighting"
+)
+
+def Xform "World"
+{
+    # Materials
+    def Material "RedLambertian"
+    {
+        color3f inputs:diffuseColor = (0.8, 0.2, 0.2)
+        float inputs:roughness = 1.0
+        float inputs:metallic = 0.0
+    }
+
+    def Material "GreenLambertian"
+    {
+        color3f inputs:diffuseColor = (0.2, 0.8, 0.2)
+        float inputs:roughness = 1.0
+        float inputs:metallic = 0.0
+    }
+
+    # Main sphere at origin
+    def Xform "MainSphere"
+    {
+        float3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Sphere "Sphere"
+        {
+            double radius = 10.0
+            rel material:binding = </World/RedLambertian>
+        }
+    }
+
+    # Ground plane (large sphere below)
+    def Xform "Ground"
+    {
+        float3 xformOp:translate = (0, -1010, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Sphere "Sphere"
+        {
+            double radius = 1000
+            rel material:binding = </World/GreenLambertian>
+        }
+    }
+
+    # Lighting
+    def DistantLight "Sun"
+    {
+        float inputs:intensity = 100
+        color3f inputs:color = (1.0, 0.95, 0.9)
+        float3 inputs:angle = (0, -1, -0.5)
+    }
+
+    def SphereLight "FillLight"
+    {
+        float3 xformOp:translate = (-15, 20, 15)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+        float inputs:intensity = 50
+        float inputs:radius = 2.0
+        color3f inputs:color = (1.0, 1.0, 1.0)
+    }
+}

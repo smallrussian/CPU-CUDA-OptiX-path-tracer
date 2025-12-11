@@ -1,0 +1,73 @@
+#usda 1.0
+(
+    doc = """Scene with sphere.obj at x=-20 and cube.obj at x=0."""
+)
+
+def Xform "World"
+{
+
+     # Materials
+    def Material "BlueLambertian"
+    {
+        color3f inputs:diffuseColor = (0.3, 0.3, 0.9)
+        float inputs:roughness = 1.0
+        float inputs:metallic = 0.0
+    }
+
+    def Material "GoldMetal"
+    {
+        color3f inputs:diffuseColor = (0.8, 0.6, 0.2)
+        float inputs:roughness = 0.1
+        float inputs:metallic = 1.0
+    }
+
+    def Material "GroundLambertian"
+    {
+        color3f inputs:diffuseColor = (0.5, 0.5, 0.4)
+        float inputs:roughness = 1.0
+        float inputs:metallic = 0.0
+    }
+
+    def Xform "Sphere"
+    (
+        payload = @sphere.obj@
+        rel material:binding = </World/BlueLambertian>
+    )
+    {
+        double3 xformOp:translate = (-20, -6, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Xform "Cube"
+    (
+        payload = @cube.obj@
+        rel material:binding = </World/GoldMetal>
+    )
+    {
+        double3 xformOp:translate = (10, -10, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Xform "Ground"
+    {
+        float3 xformOp:translate = (0, -1010, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Sphere "Sphere"
+        {
+            double radius = 1000
+            rel material:binding = <World/GroundLambertian>
+        }
+    }
+
+    def DistantLight "Sun"
+    {
+        float inputs:intensity = 100
+        color3f inputs:color = (1.0, 0.95, 0.9)
+        float3 inputs:angle = (0, -1, -0.5)
+    }
+
+  
+
+    
+}

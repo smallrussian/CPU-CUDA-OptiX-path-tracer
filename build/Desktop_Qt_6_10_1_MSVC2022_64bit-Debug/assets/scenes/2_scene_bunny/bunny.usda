@@ -1,0 +1,65 @@
+#usda 1.0
+(
+    defaultPrim = "World"
+    upAxis = "Y"
+    doc = "Stanford bunny with lighting"
+)
+
+def Xform "World"
+{
+    # Materials
+    def Material "BunnyLambertian"
+    {
+        color3f inputs:diffuseColor = (0.7, 0.85, 0.8)
+        float inputs:roughness = 1.0
+        float inputs:metallic = 0.0
+    }
+
+    def Material "GrassLambertian"
+    {
+        color3f inputs:diffuseColor = (0.3, 0.6, 0.2)
+        float inputs:roughness = 1.0
+        float inputs:metallic = 0.0
+    }
+
+    def Xform "Bunny"
+    (
+        payload = @bunny.obj@
+        rel material:binding = </World/BunnyLambertian>
+    )
+    {
+        double3 xformOp:translate = (0, -10, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+        
+    }
+
+    # Ground plane (large sphere below)
+    def Xform "Ground"
+    {
+        float3 xformOp:translate = (0, -1010, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Sphere "Sphere"
+        {
+            double radius = 1000
+            rel material:binding = </World/GrassLambertian>
+        }
+    }
+
+    # Lighting
+    def DistantLight "Sun"
+    {
+        float inputs:intensity = 100
+        color3f inputs:color = (1.0, 0.95, 0.9)
+        float3 inputs:angle = (0, -1, -0.5)
+    }
+
+    def SphereLight "FillLight"
+    {
+        float3 xformOp:translate = (-15, 20, 15)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+        float inputs:intensity = 50
+        float inputs:radius = 2.0
+        color3f inputs:color = (1.0, 1.0, 1.0)
+    }
+}
